@@ -1,12 +1,8 @@
 #!/bin/bash
 set -e # Exit immediately if a command fails
 
-# Error recovery: ensure we always return to main
-trap "git checkout main; git branch -D main-temp 2>/dev/null; git branch -D gh-pages-temp 2>/dev/null" ERR
-
 # Add flutter to PATH if it's not already there
 export PATH="$PATH:/Users/user/development/flutter/bin"
-
 
 # Ensure we are in the project root
 if [ ! -f "pubspec.yaml" ]; then
@@ -14,67 +10,57 @@ if [ ! -f "pubspec.yaml" ]; then
     exit 1
 fi
 
-# Increase buffer size and switch to HTTP/1.1 for large pushes to prevent RPC/SSL failed errors
-echo "⚙️ Configuring git buffer and protocol..."
-git config http.postBuffer 524288000
-git config http.version HTTP/1.1
-
-# Save the project root directory and the authenticated remote URL
-ROOT_DIR=$(pwd)
-REMOTE_URL=$(git remote get-url origin)
-
-echo "🌐 LaUnion Web Build & Main Update"
+echo "🌐 LaUnion Web Build & Deployment (Live on Main)"
 
 # Build the web app with correct base href for subdirectory hosting
 echo "🏗️  Building web app..."
 flutter build web --release --base-href="/LaUnion/"
 
-# 1. Update main branch with source and build artifacts
-echo "📝 Committing changes and build artifacts to main..."
+# 1. Save source code to 'development' branch
+echo "📝 Saving source code to development branch..."
 git add .
-git add -f build/web
+# Ensure build directory is NOT added to development branch
+git reset -- build/ 2>/dev/null || true
 
-# Check if there are changes to commit (or if we are ahead of origin)
-if ! git diff-index --quiet HEAD -- || [ -n "$(git log origin/main..main 2>/dev/null)" ]; then
-    if ! git diff-index --quiet HEAD --; then
-        git commit -m "Update source and web build: $(date '+%Y-%m-%d %H:%M:%S')"
-    fi
-    echo "🚀 Pushing updated code to main on GitHub..."
-    git push origin main
-else
-    echo "ℹ️ Main branch is already up to date on GitHub."
+# Commit and push to development
+if ! git diff-index --quiet HEAD --; then
+    git commit -m "Source update: $(date '+%Y-%m-%d %H:%M:%S')"
 fi
+echo "🚀 Pushing source to development branch..."
+git push origin main:development --force
 
-# 2. Deploy ONLY build artifacts to gh-pages using an orphan branch strategy
-echo "📦 Preparing gh-pages deployment..."
+# 2. Deploy ONLY build artifacts to main branch
+echo "📦 Preparing main branch deployment..."
 
-# Create a temporary directory for build artifacts outside the git repo
+# Create a temporary directory for build artifacts
 TEMP_BUILD_DIR=$(mktemp -d)
 cp -r build/web/* "$TEMP_BUILD_DIR/"
 
-# Save the current state (if we were on main, stay there, but use a temp branch for the push)
-git branch -D gh-pages-temp 2>/dev/null || true
-git checkout --orphan gh-pages-temp
+# Switch to (or create) a temporary branch for the live build
+git branch -D live-build-temp 2>/dev/null || true
+git checkout --orphan live-build-temp
 
-# Clear the index and working directory (locally only in this branch)
+# Clear EVERYTHING in the current branch
 echo "🧹 Cleaning temporary branch..."
 git rm -rf . --quiet > /dev/null
 
-# Pull the web build contents into the root of this branch
+# Copy build artifacts to the root
 echo "🚚 Moving build artifacts to root..."
 cp -r "$TEMP_BUILD_DIR"/* .
 rm -rf "$TEMP_BUILD_DIR"
 
-# Add and commit
+# Add and commit the build
 git add .
-git commit -m "Web deployment: $(date '+%Y-%m-%d %H:%M:%S')" --quiet
+git commit -m "Web deployment (Live): $(date '+%Y-%m-%d %H:%M:%S')" --quiet
 
-echo "🚀 Pushing web build to gh-pages..."
-git push origin gh-pages-temp:gh-pages --force
+echo "🚀 Pushing web build to main branch (Live site)..."
+git push origin live-build-temp:main --force
 
-# Cleanup: Switch back to main and delete the temp branch
+# Cleanup: Switch back to development locally (since main is now for builds)
 echo "🧹 Cleaning up..."
-git checkout main
-git branch -D gh-pages-temp
+git checkout development
+git branch -D live-build-temp
 
-echo "✅ Web build successfully deployed to gh-pages!"
+echo "✅ Web build successfully deployed to main!"
+echo "💡 IMPORTANT: Your source code is now on the 'development' branch."
+echo "💡 From now on, work on 'development' and run this script to deploy."
