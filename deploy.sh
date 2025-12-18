@@ -45,10 +45,14 @@ else
     echo "ℹ️ Main branch is already up to date on GitHub."
 fi
 
-# 2. Deploy ONLY build artifacts to gh-pages using an orphan branch strategy from root
-echo "📦 Preparing gh-pages deployment from root..."
+# 2. Deploy ONLY build artifacts to gh-pages using an orphan branch strategy
+echo "📦 Preparing gh-pages deployment..."
 
-# Save the current state
+# Create a temporary directory for build artifacts outside the git repo
+TEMP_BUILD_DIR=$(mktemp -d)
+cp -r build/web/* "$TEMP_BUILD_DIR/"
+
+# Save the current state (if we were on main, stay there, but use a temp branch for the push)
 git branch -D gh-pages-temp 2>/dev/null || true
 git checkout --orphan gh-pages-temp
 
@@ -58,23 +62,19 @@ git rm -rf . --quiet > /dev/null
 
 # Pull the web build contents into the root of this branch
 echo "🚚 Moving build artifacts to root..."
-git checkout main -- build/web/
-mv build/web/* .
-rm -rf build/
+cp -r "$TEMP_BUILD_DIR"/* .
+rm -rf "$TEMP_BUILD_DIR"
 
 # Add and commit
 git add .
 git commit -m "Web deployment: $(date '+%Y-%m-%d %H:%M:%S')" --quiet
 
 echo "🚀 Pushing web build to gh-pages..."
-# This uses the root repo's remote which we know works (used for main)
 git push origin gh-pages-temp:gh-pages --force
 
 # Cleanup: Switch back to main and delete the temp branch
-echo "🧹 Cleaning up temporary branch..."
+echo "🧹 Cleaning up..."
 git checkout main
 git branch -D gh-pages-temp
 
-echo "✅ Web build successfully deployed to main and gh-pages!"
-
-
+echo "✅ Web build successfully deployed to gh-pages!"
