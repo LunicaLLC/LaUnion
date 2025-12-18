@@ -111342,7 +111342,7 @@ r=r.b.a9(r.a.gq())
 q=n.e
 q===$&&A.b()
 q=q.b.a9(q.a.gq())
-r=A.aUu(A.tz(A.p0("images/logo/splash_loading/PupuseriaTitleBackground3.png",o,B.ep,o,o),q),r)
+r=A.aUu(A.tz(A.p0("assets/images/logo/splash_loading/PupuseriaTitleBackground3.png",o,B.ep,o,o),q),r)
 q=n.as
 q===$&&A.b()
 q=q.b.a9(q.a.gq())

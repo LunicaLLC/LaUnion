@@ -164,7 +164,7 @@ class _SplashLoadingScreenState extends State<SplashLoadingScreen>
                   child: Opacity(
                     opacity: _backgroundFade.value,
                     child: Image.asset(
-                      'images/logo/splash_loading/PupuseriaTitleBackground3.png',
+                      'assets/images/logo/splash_loading/PupuseriaTitleBackground3.png',
                       fit: BoxFit.contain,
                     ),
                   ),
