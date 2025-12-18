@@ -1,0 +1,21 @@
+
+1️⃣ Design phase
+	•	Hand this to a designer (or use it yourself in Figma).
+	•	Treat each section as a frame:
+	◦	Homepage hero
+	◦	Menu grid
+	◦	Item modal
+	◦	Checkout flow
+	◦	Location map
+	•	Keep spacing generous and typography bold—this layout was made for a sleek, premium feel.
+2️⃣ Tech phase
+	•	This wireframe works perfectly for:
+	◦	Next.js / React
+	◦	Flutter Web
+	◦	Webflow / Framer
+	•	It’s structured so you can later reuse logic for your mobile app.
+3️⃣ Business mindset (important)This layout:
+	•	Pushes ordering first (money)
+	•	Makes location obvious (urgency)
+	•	Encourages loyalty sign-ups (retention)
+	•	Keeps admin tools separate and clean 

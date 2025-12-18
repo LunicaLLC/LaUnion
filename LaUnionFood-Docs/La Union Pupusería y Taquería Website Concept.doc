@@ -1,0 +1,949 @@
+# **🌐 La Union: Complete App & Website Specification Document**
+
+## **Executive Summary**
+A unified digital platform combining website and mobile app to serve as the complete digital presence for La Union Pupusería y Taquería food truck. This specification defines the *complete* system without adding new features beyond what's already conceptualized, featuring in English and Spanish.
+
+---
+
+## **1. Technology Architecture**
+
+### **Unified Backend System**
+```
+Frontend Layer:
+├── Customer Website (React/Next.js)
+├── Mobile App (React Native/Flutter)
+└── Admin Portal (React Dashboard)
+
+Backend Layer:
+├── API Gateway (Node.js/Express)
+├── Microservices:
+│   ├── Order Service
+│   ├── Menu Service
+│   ├── Location Service
+│   ├── Loyalty Service
+│   └── Notification Service
+└── Database Layer:
+    ├── PostgreSQL (Orders, Users, Loyalty)
+    ├── Redis (Session cache, real-time updates)
+    └── Cloud Storage (Images, static assets)
+```
+
+### **Third-Party Integrations**
+- **Payment**: Stripe/Square (card processing) + Apple/Google Pay
+- **Maps**: Google Maps API (real-time truck location)
+- **SMS/Email**: Twilio + SendGrid for notifications
+- **Analytics**: Mixpanel/Google Analytics for tracking
+
+---
+
+## **2. Complete Feature Specifications**
+
+### **A. Core User Journeys (Defined & Closed)**
+
+#### **Journey 1: First-Time Order**
+```
+Homepage → Menu → Add Items (with modifiers) → Checkout → 
+Guest Checkout or Account Creation → Payment → 
+Confirmation + Status Tracking → Post-Order Loyalty Signup
+```
+
+#### **Journey 2: Returning Customer**
+```
+Login → Menu/Favorites → Quick Re-order → Checkout → 
+Loyalty Points Applied → Payment → 
+Status Tracking → Points Added to Account
+```
+
+#### **Journey 3: Truck Locator**
+```
+Check Schedule → View Map → Set Notifications → 
+Navigate to Truck → Show QR Code at Pickup
+```
+
+#### **Journey 4: Admin Operations**
+```
+Login → View Order Queue → Update Status → 
+Manage Menu Items → Update Schedule → View Analytics
+```
+
+---
+
+## **3. Detailed Component Specifications**
+
+### **A. Homepage (Fully Specified)**
+```
+┌─────────────────────────────────────────────────────────┐
+│ Hero Section (100vh)                                    │
+│ - Background: Parallax video/photo of food preparation  │
+│ - Primary CTA: "ORDER NOW" (links to menu)              │
+│ - Secondary CTA: "FIND TRUCK" (links to map)           │
+│ - Tertiary: "VIEW MENU" (smooth scroll to menu preview) │
+├─────────────────────────────────────────────────────────┤
+│ Location Widget (Fixed Section)                         │
+│ - Live map (static view)                                │
+│ - Current address & next departure time                 │
+│ - "Notify Me" button                                    │
+├─────────────────────────────────────────────────────────┤
+│ Menu Preview                                            │
+│ - 3-4 featured items with "Add to Order" quick buttons  │
+│ - "View Full Menu" button                               │
+├─────────────────────────────────────────────────────────┤
+│ Loyalty Teaser                                          │
+│ - Progress bar showing "X points to next reward"        │
+│ - "Join Now" / "Sign In" buttons                        │
+├─────────────────────────────────────────────────────────┤
+│ About Snippet                                           │
+│ - 2-3 sentence story + team photo                       │
+│ - "Read Our Story" link                                 │
+└─────────────────────────────────────────────────────────┘
+```
+
+### **B. Menu System (Finalized)**
+```
+Data Structure:
+{
+  category: "Pupusas",
+  items: [
+    {
+      id: "pup-001",
+      name: "Revuelta Pupusa",
+      description: "Cheese, pork, beans",
+      price: 3.50,
+      image: "url",
+      modifiers: [
+        {
+          type: "extra",
+          name: "Extra Curtido",
+          price: 0.50
+        }
+      ],
+      tags: ["spicy", "vegetarian", "gluten-free"],
+      available: true
+    }
+  ]
+}
+
+UI Components:
+- Sticky category navigation
+- Filter chips: Vegetarian, Spicy, GF, etc.
+- Search bar with autocomplete
+- Item cards with hover effects
+- Sticky order summary (mobile: bottom sheet)
+```
+
+### **C. Checkout Flow (Complete)**
+```
+Step 1: Order Review
+- Editable item list
+- Modifiers displayed
+- Subtotal calculation
+
+Step 2: Pickup Selection
+- Radio: "ASAP" vs "Schedule"
+- Date/Time picker for scheduled
+- Estimated ready times
+
+Step 3: Customer Info
+- Name
+- Phone (for notifications)
+- Email (optional, for receipt)
+
+Step 4: Payment
+- Card form (Stripe Elements)
+- Digital wallet buttons
+- Cash toggle
+- Loyalty code field
+
+Step 5: Confirmation
+- Order number
+- QR code for pickup
+- Status timeline
+- "Track Order" button
+```
+
+### **D. Loyalty Program (Full Definition)**
+```
+Points System:
+- $1 spent = 10 points
+- 500 points = free drink
+- 1000 points = free pupusa/taco
+- 1500 points = $10 off
+- 2500 points = family meal
+
+Referral Program:
+- Both parties get 250 points
+- Maximum 5 referrals/month
+
+UI Components:
+- Dashboard with points balance
+- Progress to next reward
+- Transaction history
+- Referral link generator
+```
+
+### **E. Admin Portal (Feature-Complete)**
+```
+Modules:
+1. Order Management
+   - Live queue (WebSocket updates)
+   - Status toggles: Received → Preparing → Ready → Completed
+   - Filter by status/time
+   - Order details modal
+
+2. Menu Management
+   - Drag-and-drop categories
+   - Item CRUD operations
+   - Image upload
+   - Toggle availability
+   - Price updates
+
+3. Schedule Management
+   - Weekly calendar view
+   - Add/remove locations
+   - Set hours
+   - Special hours for holidays
+
+4. Analytics Dashboard
+   - Daily sales
+   - Top items
+   - Busiest times
+   - Loyalty engagement
+   - Export to CSV
+```
+
+---
+
+## **4. User Interface Guidelines (Final)**
+
+### **Color Palette (Locked)**
+```
+Primary:
+- Spicy Red: #E63946 (CTAs, alerts)
+- Citrus Orange: #F77F00 (accent, highlights)
+- Corn Yellow: #FDC500 (discounts, deals)
+
+Neutral:
+- Off-white: #F8F8F8 (background)
+- Light Grey: #EFEFEF (cards, dividers)
+- Charcoal: #333333 (text)
+
+Accent:
+- Avocado Green: #2A9D8F (success, loyalty)
+```
+
+### **Typography (Final)**
+```
+Headings: Poppins (600 weight)
+- H1: 2.5rem
+- H2: 2rem
+- H3: 1.5rem
+
+Body: Open Sans (400 weight)
+- Primary: 1rem
+- Secondary: 0.875rem
+
+Special:
+- Menu Items: Poppins (500)
+- Prices: Poppins (600)
+```
+
+### **Spacing System (8px grid)**
+```
+Padding/Margin increments:
+- xs: 4px
+- sm: 8px
+- md: 16px
+- lg: 24px
+- xl: 32px
+- xxl: 48px
+```
+
+### **Animation Library**
+```
+- Page transitions: Fade 300ms
+- Button hover: Scale 1.05
+- Card hover: Elevation + shadow
+- Loading: Pulse animation
+- Status changes: Slide in/out
+```
+
+---
+
+## **5. Data Models (Complete Schema)**
+
+### **Core Tables**
+```sql
+-- Users table
+users(id, email, phone, name, created_at, loyalty_points)
+
+-- Orders table  
+orders(id, user_id, status, total, pickup_time, payment_method, created_at)
+
+-- Order items table
+order_items(id, order_id, menu_item_id, quantity, special_instructions)
+
+-- Menu items table
+menu_items(id, name, description, price, category, image_url, available)
+
+-- Truck locations table
+truck_locations(id, address, latitude, longitude, start_time, end_time, day_of_week)
+
+-- Loyalty transactions
+loyalty_transactions(id, user_id, points, type, order_id, created_at)
+```
+
+---
+
+## **6. API Endpoints (Complete Set)**
+
+### **Public Endpoints**
+```
+GET    /api/menu              # Get full menu
+GET    /api/locations/today   # Today's schedule
+GET    /api/locations/current # Current truck location
+POST   /api/orders            # Create order
+GET    /api/orders/:id/status # Check order status
+POST   /api/notifications     # Sign up for truck alerts
+```
+
+### **Authenticated Endpoints**
+```
+GET    /api/user/orders       # User's order history
+GET    /api/user/loyalty      # Loyalty points & rewards
+POST   /api/user/referral     # Create referral code
+PUT    /api/user/profile      # Update profile
+```
+
+### **Admin Endpoints**
+```
+PUT    /api/admin/orders/:id/status  # Update order status
+CRUD   /api/admin/menu               # Full menu management
+CRUD   /api/admin/schedule           # Location schedule
+GET    /api/admin/analytics          # Sales data
+```
+
+---
+
+## **7. Performance & Optimization**
+
+### **Loading Strategy**
+```
+Above-the-fold: Load critical CSS, hero image, CTA buttons
+Lazy load: Menu images, map, testimonials
+Prefetch: Checkout page after menu interaction
+Cache: Menu data (1 hour), locations (5 minutes)
+```
+
+### **Target Metrics**
+- First Contentful Paint: < 1.5s
+- Time to Interactive: < 3s
+- Mobile performance score: > 85/100
+- Order completion: < 2 minutes
+
+---
+
+## **8. Security & Compliance**
+
+### **Essential Measures**
+- PCI DSS compliance for payments
+- HTTPS enforcement
+- Password hashing (bcrypt)
+- SQL injection prevention
+- XSS protection
+- Rate limiting on API endpoints
+- Privacy policy & GDPR compliance
+
+### **Data Protection**
+- No sensitive data in logs
+- Encryption at rest for PII
+- Regular security audits
+- Automatic session timeout (admin: 15 minutes)
+
+---
+
+## **9. Deployment & Infrastructure**
+
+### **Production Stack**
+- **Hosting**: Vercel/Netlify (frontend), AWS/Heroku (backend)
+- **Database**: Managed PostgreSQL (e.g., AWS RDS)
+- **File Storage**: AWS S3/Cloudinary
+- **CDN**: Cloudflare for static assets
+- **Monitoring**: Sentry for errors, LogRocket for sessions
+
+### **Environment Setup**
+```
+Development → Staging → Production
+Feature branches → Pull requests → Automated tests → Deploy
+```
+
+---
+
+## **10. Success Metrics & Completion Criteria**
+
+### **Functionality Complete When:**
+- [ ] All user flows work without errors
+- [ ] Mobile responsive on iOS/Android
+- [ ] Payment processing successful
+- [ ] Real-time location updates work
+- [ ] Admin can manage all aspects
+- [ ] Loyalty points accrue and redeem
+- [ ] Notifications (SMS/email) functional
+
+### **Performance Complete When:**
+- [ ] Page load < 3s on 3G
+- [ ] 99% uptime monitoring
+- [ ] No critical accessibility issues
+- [ ] Cross-browser compatible (Chrome, Safari, Firefox)
+
+---
+# **🌐 La Union: Complete App & Website Specification Document**
+
+## **Executive Summary**
+A unified digital platform combining website and mobile app to serve as the complete digital presence for La Union Pupusería y Taquería food truck. This specification defines the *complete* system without adding new features beyond what's already conceptualized.
+
+---
+
+## **1. Technology Architecture**
+
+### **Unified Backend System**
+```
+Frontend Layer:
+├── Customer Website (Flutter Web)
+└── Admin Portal (Flutter Web)
+
+Backend Layer:
+├── API Gateway (Hosted on Railway)
+├── Microservices (if applicable, or monolithic on Railway):
+│   ├── Order Service
+│   ├── Menu Service
+│   ├── Location Service
+│   ├── Loyalty Service
+│   └── Notification Service
+└── Database Layer:
+    ├── PostgreSQL (Supabase - primary database)
+    ├── Supabase Realtime for WebSocket/updates
+    └── Supabase Storage (Images, static assets)
+```
+
+### **Third-Party Integrations**
+- **Payment**: Stripe/Square (card processing)
+- **Maps**: Google Maps API (real-time truck location) or Mapbox
+- **SMS/Email**: Twilio + Supabase Edge Functions or Resend
+- **Analytics**: Supabase Analytics or PostHog
+
+---
+
+## **2. Complete Feature Specifications**
+
+### **A. Core User Journeys (Defined & Closed)**
+
+#### **Journey 1: First-Time Order**
+```
+Homepage → Menu → Add Items (with modifiers) → Checkout → 
+Guest Checkout or Account Creation → Payment → 
+Confirmation + Status Tracking → Post-Order Loyalty Signup
+```
+
+#### **Journey 2: Returning Customer**
+```
+Login → Menu/Favorites → Quick Re-order → Checkout → 
+Loyalty Points Applied → Payment → 
+Status Tracking → Points Added to Account
+```
+
+#### **Journey 3: Truck Locator**
+```
+Check Schedule → View Map → Set Notifications → 
+Navigate to Truck → Show QR Code at Pickup
+```
+
+#### **Journey 4: Admin Operations**
+```
+Login → View Order Queue → Update Status → 
+Manage Menu Items → Update Schedule → View Analytics
+```
+
+---
+
+## **3. Detailed Component Specifications**
+
+### **A. Homepage (Fully Specified)**
+```
+┌─────────────────────────────────────────────────────────┐
+│ Hero Section (100vh)                                    │
+│ - Background: Parallax video/photo of food preparation  │
+│ - Primary CTA: "ORDER NOW" (links to menu)              │
+│ - Secondary CTA: "FIND TRUCK" (links to map)           │
+│ - Tertiary: "VIEW MENU" (smooth scroll to menu preview) │
+├─────────────────────────────────────────────────────────┤
+│ Location Widget (Fixed Section)                         │
+│ - Live map (static view)                                │
+│ - Current address & next departure time                 │
+│ - "Notify Me" button                                    │
+├─────────────────────────────────────────────────────────┤
+│ Menu Preview                                            │
+│ - 3-4 featured items with "Add to Order" quick buttons  │
+│ - "View Full Menu" button                               │
+├─────────────────────────────────────────────────────────┤
+│ Loyalty Teaser                                          │
+│ - Progress bar showing "X points to next reward"        │
+│ - "Join Now" / "Sign In" buttons                        │
+├─────────────────────────────────────────────────────────┤
+│ About Snippet                                           │
+│ - 2-3 sentence story + team photo                       │
+│ - "Read Our Story" link                                 │
+└─────────────────────────────────────────────────────────┘
+```
+
+### **B. Menu System (Finalized)**
+```
+Data Structure (Supabase Tables):
+{
+  category: "Pupusas",
+  items: [
+    {
+      id: "pup-001",
+      name: "Revuelta Pupusa",
+      description: "Cheese, pork, beans",
+      price: 3.50,
+      image: "url",
+      modifiers: [
+        {
+          type: "extra",
+          name: "Extra Curtido",
+          price: 0.50
+        }
+      ],
+      tags: ["spicy", "vegetarian", "gluten-free"],
+      available: true
+    }
+  ]
+}
+
+UI Components:
+- Sticky category navigation
+- Filter chips: Vegetarian, Spicy, GF, etc.
+- Search bar with autocomplete
+- Item cards with hover effects
+- Sticky order summary (mobile: bottom sheet)
+```
+
+### **C. Checkout Flow (Complete)**
+```
+Step 1: Order Review
+- Editable item list
+- Modifiers displayed
+- Subtotal calculation
+
+Step 2: Pickup Selection
+- Radio: "ASAP" vs "Schedule"
+- Date/Time picker for scheduled
+- Estimated ready times
+
+Step 3: Customer Info
+- Name
+- Phone (for notifications)
+- Email (optional, for receipt)
+
+Step 4: Payment
+- Card form (Stripe Elements)
+- Digital wallet buttons
+- Cash toggle
+- Loyalty code field
+
+Step 5: Confirmation
+- Order number
+- QR code for pickup
+- Status timeline
+- "Track Order" button
+```
+
+### **D. Loyalty Program (Full Definition)**
+```
+Points System:
+- $1 spent = 10 points
+- 500 points = free drink
+- 1000 points = free pupusa/taco
+- 1500 points = $10 off
+- 2500 points = family meal
+
+Referral Program:
+- Both parties get 250 points
+- Maximum 5 referrals/month
+
+UI Components:
+- Dashboard with points balance
+- Progress to next reward
+- Transaction history
+- Referral link generator
+```
+
+### **E. Admin Portal (Feature-Complete)**
+```
+Modules:
+1. Order Management
+   - Live queue (Supabase Realtime updates)
+   - Status toggles: Received → Preparing → Ready → Completed
+   - Filter by status/time
+   - Order details modal
+
+2. Menu Management
+   - Drag-and-drop categories
+   - Item CRUD operations
+   - Image upload to Supabase Storage
+   - Toggle availability
+   - Price updates
+
+3. Schedule Management
+   - Weekly calendar view
+   - Add/remove locations
+   - Set hours
+   - Special hours for holidays
+
+4. Analytics Dashboard
+   - Daily sales
+   - Top items
+   - Busiest times
+   - Loyalty engagement
+   - Export to CSV
+```
+
+---
+
+## **4. User Interface Guidelines (Final)**
+
+### **Color Palette (Locked)**
+```
+Primary:
+- Spicy Red: #E63946 (CTAs, alerts)
+- Citrus Orange: #F77F00 (accent, highlights)
+- Corn Yellow: #FDC500 (discounts, deals)
+
+Neutral:
+- Off-white: #F8F8F8 (background)
+- Light Grey: #EFEFEF (cards, dividers)
+- Charcoal: #333333 (text)
+
+Accent:
+- Avocado Green: #2A9D8F (success, loyalty)
+```
+
+### **Typography (Final)**
+```
+Headings: Poppins (600 weight)
+- H1: 2.5rem
+- H2: 2rem
+- H3: 1.5rem
+
+Body: Open Sans (400 weight)
+- Primary: 1rem
+- Secondary: 0.875rem
+
+Special:
+- Menu Items: Poppins (500)
+- Prices: Poppins (600)
+```
+
+### **Spacing System (8px grid)**
+```
+Padding/Margin increments:
+- xs: 4px
+- sm: 8px
+- md: 16px
+- lg: 24px
+- xl: 32px
+- xxl: 48px
+```
+
+### **Animation Library (Flutter)**
+```
+- Page transitions: FadeTransition 300ms
+- Button hover: ScaleTransition
+- Card hover: AnimatedContainer with elevation
+- Loading: CircularProgressIndicator with pulse
+- Status changes: SlideTransition
+```
+
+---
+
+## **5. Data Models (Complete Schema - Supabase)**
+
+### **Core Tables**
+```sql
+-- Users table (Supabase Auth extends this)
+users(id UUID, email TEXT, phone TEXT, name TEXT, created_at TIMESTAMP, loyalty_points INT)
+
+-- Orders table  
+orders(id UUID, user_id UUID, status TEXT, total DECIMAL, pickup_time TIMESTAMP, payment_method TEXT, created_at TIMESTAMP)
+
+-- Order items table
+order_items(id UUID, order_id UUID, menu_item_id UUID, quantity INT, special_instructions TEXT)
+
+-- Menu items table
+menu_items(id UUID, name TEXT, description TEXT, price DECIMAL, category TEXT, image_url TEXT, available BOOLEAN)
+
+-- Truck locations table
+truck_locations(id UUID, address TEXT, latitude DECIMAL, longitude DECIMAL, start_time TIME, end_time TIME, day_of_week INT)
+
+-- Loyalty transactions
+loyalty_transactions(id UUID, user_id UUID, points INT, type TEXT, order_id UUID, created_at TIMESTAMP)
+```
+
+---
+
+## **6. API Structure (Flutter + Railway + Supabase)**
+
+### **Frontend Architecture (Flutter)**
+```
+- State Management: Riverpod or Bloc
+- Routing: GoRouter or AutoRoute
+- HTTP Client: Dio or HTTP package
+- Local Storage: Hive or SharedPreferences
+- Real-time: Supabase Realtime subscription
+```
+
+### **Backend Services (Railway)**
+```
+- Primary Language: Node.js/Express or Python/FastAPI
+- Authentication: Supabase Auth integration
+- Business Logic: Railway services/workers
+- File Processing: Railway volumes + Supabase Storage
+- Cron Jobs: Railway cron for cleanup/notifications
+```
+
+### **Database & Real-time (Supabase)**
+```
+- Primary DB: PostgreSQL (managed by Supabase)
+- Auth: Supabase Auth with Row Level Security
+- Storage: Supabase Storage for images
+- Realtime: Supabase Realtime for live updates
+- Edge Functions: Supabase Edge Functions for serverless
+```
+
+---
+
+## **7. Performance & Optimization**
+
+### **Flutter Web Optimization**
+```
+- Tree shaking for production builds
+- Lazy loading for images
+- Code splitting for large bundles
+- Precaching of critical assets
+- Supabase query optimization with indexes
+```
+
+### **Target Metrics**
+- First Contentful Paint: < 1.5s
+- Time to Interactive: < 3s
+- Mobile performance score: > 85/100
+- Order completion: < 2 minutes
+
+---
+
+## **8. Security & Compliance**
+
+### **Supabase Security Features**
+- Row Level Security (RLS) policies
+- Automatic SSL/TLS
+- Built-in authentication with OAuth
+- Email confirmations and CAPTCHA
+- Database backups and point-in-time recovery
+
+### **Additional Measures**
+- PCI DSS compliance via Stripe/Square
+- HTTPS enforcement
+- Rate limiting on Railway endpoints
+- Privacy policy & GDPR compliance
+- Regular security audits
+
+---
+
+## **9. Deployment & Infrastructure**
+
+### **Production Stack**
+- **Frontend Hosting**: Flutter Web build deployed to Railway static hosting or Vercel/Netlify
+- **Backend Hosting**: Railway (Node.js/Python services)
+- **Database**: Supabase PostgreSQL
+- **File Storage**: Supabase Storage
+- **CDN**: Supabase CDN for images + Cloudflare
+- **Monitoring**: Sentry for errors, Supabase Logs
+
+### **Environment Setup**
+```
+Development (Local) → Staging (Railway Preview) → Production (Railway)
+Feature branches → Pull requests → Automated tests → Deploy to Railway
+```
+
+---
+
+## **10. Success Metrics & Completion Criteria**
+
+### **Functionality Complete When:**
+- [ ] All user flows work without errors on Flutter Web
+- [ ] Responsive design works on all screen sizes
+- [ ] Payment processing via Stripe/Square integrated
+- [ ] Real-time location updates via Supabase Realtime
+- [ ] Admin portal fully functional on Flutter Web
+- [ ] Loyalty points accrue and redeem via Supabase functions
+- [ ] Notifications (SMS/email) functional via Railway workers
+
+### **Performance Complete When:**
+- [ ] Page load < 3s on 3G
+- [ ] 99% uptime monitoring via Railway/Supabase
+- [ ] No critical accessibility issues
+- [ ] Cross-browser compatible (Chrome, Safari, Firefox, Edge)
+- [ ] Flutter Web bundle size optimized (< 2MB initial load)
+
+### **Tech Stack Confirmation:**
+- ✅ **Frontend**: Flutter (Web)
+- ✅ **Backend Hosting**: Railway
+- ✅ **Database**: Supabase (PostgreSQL + Auth + Storage + Realtime)
+- ✅ **Architecture**: Flutter Web client ↔ Railway API services ↔ Supabase data layer
+
+Balanced Flutter Structure 
+Flutter Web – Customer + Admin
+Design goals
+	•	Easy to understand
+	•	Feature-based (not too many layers)
+	•	Scales to mobile later
+	•	Works great with Supabase + Railway
+	•	No premature abstractions
+
+🧱 Recommended Folder Structure
+lib/
+├── main.dart
+├── app.dart
+├── router.dart
+│
+├── config/
+│   ├── env.dart
+│   ├── supabase_config.dart
+│   ├── theme.dart
+│   └── constants.dart
+│
+├── services/
+│   ├── supabase_service.dart
+│   ├── api_service.dart
+│   ├── realtime_service.dart
+│   ├── payment_service.dart
+│   └── notification_service.dart
+│
+├── models/
+│   ├── user.dart
+│   ├── menu_item.dart
+│   ├── modifier.dart
+│   ├── order.dart
+│   ├── order_item.dart
+│   ├── truck_location.dart
+│   └── loyalty_transaction.dart
+│
+├── providers/
+│   ├── auth_provider.dart
+│   ├── menu_provider.dart
+│   ├── cart_provider.dart
+│   ├── order_provider.dart
+│   ├── location_provider.dart
+│   ├── loyalty_provider.dart
+│   └── admin_provider.dart
+│
+├── ui/
+│   ├── layout/
+│   │   ├── app_scaffold.dart
+│   │   ├── admin_scaffold.dart
+│   │   └── responsive_layout.dart
+│   │
+│   ├── shared/
+│   │   ├── app_button.dart
+│   │   ├── app_card.dart
+│   │   ├── loading.dart
+│   │   ├── error_view.dart
+│   │   └── empty_view.dart
+│   │
+│   ├── pages/
+│   │   ├── home/
+│   │   │   └── home_page.dart
+│   │   ├── menu/
+│   │   │   ├── menu_page.dart
+│   │   │   └── item_modal.dart
+│   │   ├── cart/
+│   │   │   └── cart_page.dart
+│   │   ├── checkout/
+│   │   │   └── checkout_page.dart
+│   │   ├── orders/
+│   │   │   ├── order_status_page.dart
+│   │   │   └── order_history_page.dart
+│   │   ├── location/
+│   │   │   └── truck_map_page.dart
+│   │   ├── loyalty/
+│   │   │   └── loyalty_page.dart
+│   │   ├── profile/
+│   │   │   └── profile_page.dart
+│   │   └── admin/
+│   │       ├── admin_dashboard_page.dart
+│   │       ├── admin_orders_page.dart
+│   │       ├── admin_menu_page.dart
+│   │       ├── admin_schedule_page.dart
+│   │       └── admin_analytics_page.dart
+│   │
+│   └── widgets/
+│       ├── menu_item_card.dart
+│       ├── order_summary.dart
+│       ├── location_widget.dart
+│       ├── loyalty_progress.dart
+│       └── status_timeline.dart
+│
+└── utils/
+    ├── validators.dart
+    ├── formatters.dart
+    └── debouncer.dart
+
+🧠 Why this structure works
+✅ Not over-engineered
+	•	No unnecessary data/domain/usecase layers
+	•	No excessive abstraction
+	•	Easy to jump into any feature
+✅ Still scalable
+	•	Providers handle growth
+	•	Services can expand later
+	•	Pages are feature-grouped
+	•	Admin isolated cleanly
+✅ Web-first but mobile-ready
+	•	Responsive layouts
+	•	Drawer → Bottom Nav later
+	•	Same codebase if you add mobile
+
+🧭 Routing (Simple & Clean)
+/
+├── /home
+├── /menu
+├── /cart
+├── /checkout
+├── /orders/:id
+├── /location
+├── /loyalty
+├── /profile
+└── /admin
+    ├── /dashboard
+    ├── /orders
+    ├── /menu
+    ├── /schedule
+    └── /analytics
+	•	Use GoRouter
+	•	Simple auth checks inside router
+	•	Admin pages behind role check
+
+🔁 State Management
+Riverpod (light usage)
+	•	One provider per feature
+	•	No nested madness
+	•	Easy debugging
+Example logic separation:
+	•	Providers → state + logic
+	•	Services → Supabase / API calls
+	•	UI → dumb rendering
+
+
+
+
+
